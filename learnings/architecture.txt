@@ -1,0 +1,88 @@
+Flow 
+
+	cli
+
+	Docker Daemon
+
+	containerd
+
+	runc
+
+	containers
+
+cli:
+
+	this is command line interface (docker) that we used to interact with docker
+
+	send commands to docker ( ex. docker ps )
+
+	communication happen via RESTapi, UNIX socket or network
+
+Docker Daemon :
+
+	the background service that manages docker object like (images, containers, volumes and network)
+
+	Receives commands from the CLI and orchestrates container operations.
+
+	Delegates container lifecycle tasks to containerd.
+
+	-> Docker Daemon → containerd
+
+		The Docker Daemon is the high-level orchestrator. It doesn’t directly create containers anymore.
+		Instead, it instructs containerd to perform all container lifecycle operations.
+
+	
+Containerd:
+
+	A container runtime that handles the heavy lifting of container lifecycle:
+
+		Pulling images from registries
+		Managing storage
+		Running containers
+
+	Acts as an abstraction layer between Docker and the low-level runtime.
+
+	Uses runc to create containers based on OCI specifications.
+
+
+runc:
+
+	runc is a low-level container runtime.
+
+	It is OCI-compliant (Open Container Initiative), meaning it follows industry standards for container creation.
+
+	It is responsible for actually creating and running containers on the host system.
+
+	containerd delegates the final step of container creation to runc.
+	
+	runc uses Linux kernel features like:
+
+		Namespaces (for isolation)
+		cgroups (for resource limits)
+		Capabilities (for security)
+
+Key Responsibilities
+
+	Create Containers
+
+		Applies OCI configuration to set up the container environment.
+
+	Start Container Process
+
+		Executes the application inside the container.
+
+	Apply Isolation
+
+		Ensures the container is isolated from the host and other containers.
+
+
+Docker CLI → Docker Daemon → containerd → runc → Containers
+
+
+Docker CLI: User commands.
+Docker Daemon: Orchestrates.
+containerd: Manages lifecycle.
+runc: Creates and runs containers.
+Containers: Final running environment.
+
+
