@@ -1,0 +1,172 @@
+-> docker --versin		show the version of the docker 
+
+-> dokcer info			show docker system information
+
+-> dokcer run <image name> 	it will create or start the new container from an docker image, if image is not available in local, docker will download it form the remote repo
+
+	-d 			 detached mode(run in background)
+	-p			 <host port>:<container port> (port mapping)
+	--name 			 <conatiner name> assign name to new container
+	--it 			 interactive terminal (useful for shell)
+	-rm 			 remove the conatiner after the stop 
+	-v 			 <host_path>:<container_path> → Mount a volume
+
+
+-> tag				is used to identify different version of the image it work like a lable attached to an image name
+				A tag is a string that follows the image name, separated by a colon (:)
+				ex.
+				nginx:latest
+	
+	docker run nginx 	-> if we did not the mention the tag name. docker automatically pull the latest image
+
+	docker run niginx:4.0   -> :4.0 (it is an tag), now docker will download that tag image
+
+	Tags allow you to pull or run specific versions of an image.
+	If you don’t specify a tag, Docker uses latest by default.
+
+
+- > -it
+
+	by default container won't listen the standard input from the user , it will run in non-interactive mode. even it was  attached to terminal(-t)
+for thet we need to use (-i) interactive mode, now conatiner will get the standard  input form the user
+
+
+	by default container won't use the terminal, for that we need to use the (-t) pseudo-TTY terminal to allocate the terminal for the container to use
+
+
+-> docker run -it ubuntu 
+
+	docker will download the ubuntu image and start the run container in interactive mode 
+
+-> dokcer run ubuntu <linux commnad>
+
+	start the container and execute the command and exit the container
+
+	ex . dokcer run ubuntu cat /etc/*release*     -> it is used to check the version of the ubuntu 
+
+-> docker start <container name or id>  -ai
+
+	it will restart the existing contianer
+	-a attached to container ouput to terminal (like -t) (STDOUT and STDERR) 
+	-i keep STDIN open for interaction
+
+
+
+docker run --name demoUbuntu ubuntu
+
+	demoUbuntu is an name for the container, this ia the way we can set name to container for easy identification and others ..
+
+docker run -d ubuntu sleep 100
+
+	docker run the container in background mode
+
+docker run --rm ubuntu 
+
+	docker automatically remove the container after it exits
+
+
+networking...
+
+
+docker run  -p <host port>:<container port> nginx
+
+	port mapping,now the application accessible via host port, example if we want to access the application in host, we can use container ip and container port to access the application, outside the host we want to access the container , we need to create port mapping for the accessing 
+
+note:
+	every container have it's own ip address used with in the host
+
+	ex. docker run -d --name webserver -p 8080:80 nginx
+
+
+
+docker run --network customnet ubuntu 
+
+	--network Connect to a specific Docker network
+
+docker run --add-host <hostname>:<ip> ubuntu 
+
+	add custom host entry
+
+
+volume...
+
+
+docker -v <host path>:<container path> ubuntu
+
+	Mount a volume  Example: -v /data:/app/data
+
+
+	--mount → Advanced mount options (bind, volume, tmpfs)
+
+	ex. docker run -d --name app -v /host/data:/container/data ubuntu
+
+Environment....
+
+docker run -e <key>=<value> ubuntu
+
+	 Set environment variables
+	 Example: -e ENV=prod
+
+docker run --env-file <file> ubuntu
+
+	Load env vars from file
+
+	ex. docker run -d --name envtest -e MYVAR=hello ubuntu env
+
+
+Resource Limits..
+
+	--memory <limit>  Limit container memory
+	--cpus  <number>  Limit CPU usage
+
+
+	ex docker run -d --memory="256m" --cpus="0.5" ubuntu sleep 3600
+
+
+
+restart....
+
+
+	--restart flag in run use to set the restart policy for a container 
+
+common restart policy:
+
+	no 		 default (Do not restart the container automatically)
+	always		always restart 	the container if it stops
+	on failure	restart only if it container exits with non zero status
+	unless-stopped  restart the unless you manually stop the conatiner
+
+	docker run -d --name webserver --restart always nginx
+	if the container crashes or Docker daemon restarts, it will start again.
+
+	docker run -d --name app --restart on-failure:3 ubuntu sleep 10
+	Will retry up to 3 times if the container fails.
+
+	docker run -d --name db --restart unless-stopped mysql
+	Keeps restarting unless you explicitly stop it.
+
+
+
+--entrypoint <command>    Overrides the default entrypoint of the image.
+
+	docker run --entrypoint /bin/bash -it ubuntu
+
+	Normally, Ubuntu runs /bin/sh as the default shell.
+	Here, we override it to use /bin/bash.
+
+
+--workdir <path>       Sets the working directory inside the container.
+
+
+	When you enter the container, your current directory will be /app.
+	If /app doesn’t exist, Docker creates it.
+
+
+ --privileged  Gives the container extended privileges (like full access to the host system).
+
+	docker run -it --privileged ubuntu bash
+
+	Useful for running Docker inside Docker or accessing hardware.
+	 Use with caution because it bypasses many security restrictions.
+	
+
