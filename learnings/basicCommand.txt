@@ -170,3 +170,108 @@ common restart policy:
 	 Use with caution because it bypasses many security restrictions.
 	
 
+
+task 1
+
+	create a nginx container with custom html page
+
+	docker run -d\
+	-p 80:80\
+	-v $(pwd)/index.html:/usr/share/nginx/html/index.html \
+	nginx
+
+	but it wont support the live connection, because the we are mount the single file
+
+
+
+	for live connection
+
+
+	docker run -d\
+	-p 80:80\
+	-v $(pwd):/usr/share/nginx/html\
+	nginx
+
+	now we mount the complete dir so live connection was enabled
+
+	Directory mount (-v /host/dir:/container/dir) creates a full link between host and container, so all file changes sync instantly.
+	Single-file mount (-v /host/file:/container/file) is treated as a static mapping, so live updates often don’t propagate.
+	Docker watches directories for changes, not individual files, which is why directory mounts support real-time sync.
+
+
+rename the container
+
+	we cant rename the runnig container, we need to stop and rename the container
+
+	docker rename <old_name> <new name>
+
+
+docker ps
+
+	command is used to list all the runnig containers. it will show details like 
+
+	container ID
+	image name
+	Command used to start the container
+	status
+	ports
+	name of the container
+
+
+docker ps -a 
+
+	is used to list all the running and stopped containers. 
+
+	- a or --all		(show the all container)
+	-q or --quiet		(display the only container id)
+	--filter or -f		Filter output based on conditions
+
+	--format		Customize the output using Go templates:
+	--last or -n		Show the last n containers (including stopped):
+
+	--no-trunc		Do not truncate output (show full container IDs and commands).
+	--size or -s		Show container sizes.
+
+ex. docker ps --format "{{.Names}}: {{.Status}}"
+
+
+
+
+
+
+
+docker stop <name or id>   
+
+	is used to stop one or more running containers
+
+	docker stop container1 container2 container3    (for stopping multiple containers)
+
+	-t or --time
+		Description: Seconds to wait before killing the container after sending the SIGTERM signal.
+		Default: 10 seconds  
+
+
+
+docker start <name or id>
+
+	is used to start one or more stopped containers
+
+	-a or --attach 		Attach STDOUT/STDERR and forward signals.
+	-i or --interactive     Attach STDIN (useful for interactive containers).
+
+
+
+docker restart <name or id>
+
+	is used to stop and then stat a container in one step It’s handy when you need to refresh a container without removing it.
+
+	
+docker rm <name or id>
+
+	is used to remove the contianer that you no longer need .it will only work for the stopped container 
+
+	-f or --force  -> force remove the running container 
+
+	-v or --volumes  -> Remove associated anonymous volumes with the container.
+
+	
